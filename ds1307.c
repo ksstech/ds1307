@@ -59,13 +59,13 @@ static int ds1307WriteData(u8_t addr, u8_t len) {
 }
 
 static int ds1307ReportDetail(report_t * psR, tm_t * psTM) {
-	int iRV = report(psR, "REG: %d%d/%d%d/%d%d %d%d:%d%d:%d%d DoW=%d" strNL, sDS1307.yrH + 197,
+	int iRV = xReport(psR, "REG: %d%d/%d%d/%d%d %d%d:%d%d:%d%d DoW=%d" strNL, sDS1307.yrH + 197,
 		sDS1307.yrL, sDS1307.mthH, sDS1307.mthL, sDS1307.dayH, sDS1307.dayL, sDS1307.h24.hrsH,
 		sDS1307.h24.hrsL, sDS1307.minH, sDS1307.minL, sDS1307.secH, sDS1307.secL, sDS1307.wday);
 	if (psTM)
-		iRV += report(psR, "sTM: %d/%02d/%02d %d:%02d:%02d DoW=%d DoY=%d" strNL, psTM->tm_year + YEAR_BASE_MIN,
+		iRV += xReport(psR, "sTM: %d/%02d/%02d %d:%02d:%02d DoW=%d DoY=%d" strNL, psTM->tm_year + YEAR_BASE_MIN,
 			psTM->tm_mon+1, psTM->tm_mday, psTM->tm_hour, psTM->tm_min, psTM->tm_sec, psTM->tm_wday, psTM->tm_yday);
-	iRV += report(psR, "SYS: %R" strNL, sTSZ.usecs);
+	iRV += xReport(psR, "SYS: %R" strNL, sTSZ.usecs);
 	return iRV;
 }
 
@@ -193,7 +193,7 @@ seconds_t ds1307GetTime(tm_t * psTM) {
 int ds1307ReportConfig(report_t * psR, const char * pcStr) {
 	int iRV = ds1307ReadData(offsetof(ds1307_t, sConf), SO_MEM(ds1307_t, sConf));
 	if (iRV >=erSUCCESS)
-		iRV = report(psR, "%sCH=%c  H12=%c  OUT=%c  SQWE=%c  RS=%c" strNL, pcStr, sDS1307.CH + CHR_0, 
+		iRV = xReport(psR, "%sCH=%c  H12=%c  OUT=%c  SQWE=%c  RS=%c" strNL, pcStr, sDS1307.CH + CHR_0, 
 				sDS1307.h24.hrsX + CHR_0, sDS1307.out + CHR_0, sDS1307.sqwe + CHR_0, sDS1307.rs + CHR_0);
 	return iRV;
 }
@@ -201,14 +201,14 @@ int ds1307ReportConfig(report_t * psR, const char * pcStr) {
 int ds1307ReportData(report_t * psR, const char * pcStr) {
 	int iRV = ds1307ReadData(offsetof(ds1307_t, sData), SO_MEM(ds1307_t, sData));
 	if (iRV >=erSUCCESS)
-		iRV = report(psR, "%s%!'+hhY" strNL, pcStr, SO_MEM(ds1307_t, sData), &sDS1307.data);
+		iRV = xReport(psR, "%s%!'+hhY" strNL, pcStr, SO_MEM(ds1307_t, sData), &sDS1307.data);
 	return iRV;
 }
 
 int ds1307ReportTime(report_t * psR, const char * pcStr) {
 	seconds_t Epoch = ds1307GetTime(NULL);
 	if (Epoch < 0xFFFFFFFF)
-		return report(psR, "%s%r" strNL, pcStr, Epoch);
+		return xReport(psR, "%s%r" strNL, pcStr, Epoch);
 	return erFAILURE;
 }
 
