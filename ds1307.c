@@ -5,7 +5,6 @@
 #if (HAL_DS1307 > 0)
 #include "ds1307.h"
 #include "hal_i2c_common.h"
-#include "hal_options.h"
 #include "errors_events.h"
 #include "syslog.h"
 #include "systiming.h"
