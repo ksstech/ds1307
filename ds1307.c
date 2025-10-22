@@ -105,7 +105,7 @@ int	ds1307Config(i2c_di_t * psI2C) {
 	}
 	if (iRV < erSUCCESS)
 		goto exit;
-	if ((sDS1307.out || sDS1307.sqwe || sDS1307.rs)) {
+	if (sDS1307.out || sDS1307.sqwe || sDS1307.rs) {
 		sDS1307.r7 = 0;									// Turn all OFF
 		iRV = ds1307WriteData(offsetof(ds1307_t, r7), SO_MEM(ds1307_t, r7));
 	}
@@ -197,18 +197,18 @@ int ds1307ReportConfig(report_t * psR, const char * pcStr) {
 	return iRV;
 }
 
-int ds1307ReportData(report_t * psR, const char * pcStr) {
-	int iRV = ds1307ReadData(offsetof(ds1307_t, sData), SO_MEM(ds1307_t, sData));
-	if (iRV >=erSUCCESS)
-		iRV = xReport(psR, "%s%!'+hhY" strNL, pcStr, SO_MEM(ds1307_t, sData), &sDS1307.data);
-	return iRV;
-}
-
 int ds1307ReportTime(report_t * psR, const char * pcStr) {
 	seconds_t Epoch = ds1307GetTime(NULL);
 	if (Epoch < 0xFFFFFFFF)
 		return xReport(psR, "%s%r" strNL, pcStr, Epoch);
 	return erFAILURE;
+}
+
+int ds1307ReportData(report_t * psR, const char * pcStr) {
+	int iRV = ds1307ReadData(offsetof(ds1307_t, sData), SO_MEM(ds1307_t, sData));
+	if (iRV >=erSUCCESS)
+		iRV = xReport(psR, "%s%!'+hhY" strNL, pcStr, SO_MEM(ds1307_t, sData), &sDS1307.data);
+	return iRV;
 }
 
 int ds1307Report(report_t * psR, const char * pcStr) {
