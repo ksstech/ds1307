@@ -70,6 +70,11 @@ static int ds1307ReportDetail(report_t * psR, tm_t * psTM) {
 
 // ################################## Diagnostics functions ########################################
 
+int ds1307FillData(void) {
+	memset(&sDS1307.data, 0, SO_MEM(ds1307_t, data));
+	return ds1307WriteData(offsetof(ds1307_t, data), SO_MEM(ds1307_t, data));
+}
+
 int	ds1307Identify(i2c_di_t * psI2C) {
 	sDS1307.psI2C = psI2C;
 	psI2C->TObus = 100;
@@ -111,6 +116,7 @@ int	ds1307Config(i2c_di_t * psI2C) {
 	}
 	if (iRV < erSUCCESS)
 		goto exit;
+//	iRV = ds1307FillData(); if (iRV < erSUCCESS) goto exit;
 	tm_t sTM = { 0 };
 	seconds_t SYStime = xTimeStampSeconds(sTSZ.usecs);	// get seconds from current system time 
 	if (SYStime < BuildSeconds)							// if older/before build time
