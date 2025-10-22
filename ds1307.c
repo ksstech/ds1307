@@ -184,7 +184,11 @@ seconds_t ds1307GetTime(tm_t * psTM) {
 	psTM->tm_min = (sDS1307.minH * 10) + sDS1307.minL;
 	psTM->tm_sec = (sDS1307.secH * 10) + sDS1307.secL;
 	psTM->tm_yday = xTimeCalcDaysYTD(psTM);
-	return xTimeCalcSeconds(psTM, 0);
+	seconds_t Sec = xTimeCalcSeconds(psTM, 0);
+	#if (appOPTIONS == 1)
+		Sec += xOptionGet(ioTZlocal) ? sTSZ.pTZ->timezone : 0;
+	#endif
+	return Sec;
 }
 
 // ######################################## Reporting ##############################################
