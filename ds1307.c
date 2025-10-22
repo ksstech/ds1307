@@ -122,7 +122,7 @@ int	ds1307Config(i2c_di_t * psI2C) {
 	} else {
 		iRV = ds1307SetTime(SYStime);					// update RTC with SYStime
 	}
-	SL_NOT("RTC=%r  SYS=%r  Dif=%!r", RTCtime, SYStime, RTCtime - SYStime);
+	SL_LOG(RTCtime - SYStime ? SL_SEV_WARNING : SL_SEV_NOTICE, "RTC=%r  SYS=%r  Dif=%!r", RTCtime, SYStime, RTCtime - SYStime);
 	if (iRV < erSUCCESS)
 		goto exit;
 	if (psI2C->CFGerr == 0)								// once off init....
